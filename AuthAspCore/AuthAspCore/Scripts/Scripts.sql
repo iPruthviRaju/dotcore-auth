@@ -3,6 +3,12 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF DB_ID('CoreAuth') IS NULL
+BEGIN
+	CREATE DATABASE [CoreAuth]
+END
+GO
+
 CREATE TABLE [dbo].[__EFMigrationsHistory](
 	[MigrationId] [nvarchar](150) NOT NULL,
 	[ProductVersion] [nvarchar](32) NOT NULL,

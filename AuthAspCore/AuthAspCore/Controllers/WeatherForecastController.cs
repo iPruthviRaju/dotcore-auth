@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AuthAspCore.Authentication;
+using AuthAspCore.Infrastructure;
 
 namespace AuthAspCore.Controllers
 {
-    [Authorize(Roles = UserRoles.Admin)]
     [ApiController]
     [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -29,6 +27,7 @@ namespace AuthAspCore.Controllers
         
         [HttpGet]
         [Route("Get")]
+        [AuthorizeRoles(UserRoles.User, UserRoles.Admin)]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
