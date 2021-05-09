@@ -23,7 +23,7 @@ namespace AuthAspCore.Controllers
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration _configuration;
 
-        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager , IConfiguration configuration)
+        public AuthenticationController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
@@ -52,7 +52,7 @@ namespace AuthAspCore.Controllers
 
             await RegisterRole(role, user);
 
-            return Ok(new Response { Status = "Success", Message = "User Created Successfully" });
+            return Ok(new Response { Status = "Success", Message = $"{role} Created Successfully!" });
         }
 
         [HttpPost]
@@ -60,7 +60,7 @@ namespace AuthAspCore.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await userManager.FindByNameAsync(model.UserName);
-            if(user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
             {
                 var userRoles = await userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
@@ -78,13 +78,13 @@ namespace AuthAspCore.Controllers
                     audience: _configuration["JWT:ValidAudience"],
                     expires: DateTime.Now.AddDays(1),
                     claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSiginKey,SecurityAlgorithms.HmacSha256Signature)
+                    signingCredentials: new SigningCredentials(authSiginKey, SecurityAlgorithms.HmacSha256Signature)
                     );
 
                 return Ok(new
-                    {
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        ValidTo = token.ValidTo.ToString("yyyy-MM-ddThh:mm:ss")
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    ValidTo = token.ValidTo.ToString("yyyy-MM-ddThh:mm:ss")
                 });
             }
             return Unauthorized();

@@ -41,16 +41,16 @@ namespace AuthAspCore
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            //Enable cors
+            services.AddCors();
+
             //Adding Authentication
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-
-            //Adding Jwt Bearer
-            .AddJwtBearer(options =>
+            }).AddJwtBearer(options => //Adding Jwt Bearer
             {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
@@ -61,8 +61,6 @@ namespace AuthAspCore
                     ValidAudience = Configuration["JWT:ValidAudience"],
                     ValidIssuer = Configuration["JWT:ValidIssuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Secret"])),
-                    
-                    
                 };
             });
 
@@ -84,6 +82,8 @@ namespace AuthAspCore
             }
 
             app.UseRouting();
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             //Authentication comes before Authorization.
             app.UseAuthentication();
