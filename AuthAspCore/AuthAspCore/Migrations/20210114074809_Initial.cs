@@ -216,4 +216,6 @@ namespace AuthAspCore.Migrations
                 name: "AspNetUsers");
         }
     }
+
+
 }
