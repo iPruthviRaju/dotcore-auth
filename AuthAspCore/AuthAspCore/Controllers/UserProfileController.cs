@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
@@ -23,9 +24,17 @@ namespace WebAPI.Controllers
         //GET : /api/UserProfile
         public async Task<Object> GetUserProfile()
         {
-            //string userName = User.Claims.First(c => c.Type == "UserName").Value;
-            var user = await _userManager.FindByNameAsync("admin");
-            return new { user.UserName, user.Email };
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+                return null;
+
+            var userName = identity.Claims.First(c => c.Type == "UserName").Value;
+            var user = await _userManager.FindByNameAsync(userName);
+            return new
+            {
+                user.UserName,
+                user.Email
+            };
         }
     }
 }
